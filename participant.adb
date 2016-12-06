@@ -1,8 +1,12 @@
-package Participant is
+package body Participant is
    
-    type Joueur is (Joueur1, Joueur2);
-   
-    -- Retourne l'adversaire du joueur passé en paramètre
-    function Adversaire(J : Joueur) return Joueur;
+    function Adversaire(J : Joueur) return Joueur is 
+    begin
+    	if J = Joueur1 then
+    		return Joueur2;
+    	end if;
+    	return Joueur1;
+  	end Adversaire;
+    
       
 end Participant;

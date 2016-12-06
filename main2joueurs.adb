@@ -10,6 +10,12 @@ use Ada.Text_IO;
 use Ada.Integer_Text_IO;
 use Participant;
 
+-- Iterateur_Interne = Cellule atm
+-- Est_Nul() n'utilise pas Joueur
+-- Joueur1 est tjs X
+-- Est_Gagnant non implementée
+
+
 procedure Main2Joueurs is
    
    package MyPuissance4 is new Puissance4(3,3,3);
@@ -19,13 +25,13 @@ procedure Main2Joueurs is
 				  MyPuissance4.Coup, 
 				  "Pierre",
 				  "Paul",
-				  MyPuissance4.Jouer,
+				  MyPuissance4.Etat_Suivant,
 				  MyPuissance4.Est_Gagnant,
 				  MyPuissance4.Est_Nul,
-				  MyPuissance4.Afficher,
+				  MyPuissance4.Affiche_Jeu,
 				  MyPuissance4.Affiche_Coup,
-				  MyPuissance4.Demande_Coup_Joueur1,
-				  MyPuissance4.Demande_Coup_Joueur2);
+				  MyPuissance4.Coup_Joueur1,
+				  MyPuissance4.Coup_Joueur2);
    use MyPartie;
    
    P: MyPuissance4.Etat;

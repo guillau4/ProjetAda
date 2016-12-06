@@ -48,9 +48,19 @@ package Liste_Generique is
 private 
     type Cellule;
     type Liste is access Cellule;
+    type Cellule is record
+--===> GENERICITE: Val est du type "Element" generique
+		Val: Element;
+		Suiv: Liste;
+	end record;
 
     type Iterateur_Interne;
     type Iterateur is access Iterateur_Interne;
+    type Iterateur_Interne is record
+--===> GENERICITE: Val est du type "Element" generique
+		Val: Element;
+		Suiv: Liste;
+	end record;
    
 end Liste_Generique;
 
