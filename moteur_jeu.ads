@@ -16,7 +16,7 @@ generic
     -- Affiche a l'ecran le coup passe en parametre
     with procedure Affiche_Coup(C : in Coup);
     -- Implantation d'un package de liste de coups
-    with package Liste_Coups is new Liste_Generique(Coup, Affiche_Coup); 
+    with package Liste_Coups is new Liste_Generique(Coup, Affiche_Coup);	
     -- Retourne la liste des coups possibles pour J a partir de l'etat 
     with function Coups_Possibles(E : Etat; J : Joueur)
             return Liste_Coups.Liste; 

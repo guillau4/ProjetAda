@@ -27,6 +27,15 @@ package Liste_Generique is
 
     -- Creation de la liste vide
     function Creer_Liste return Liste;
+    
+    --Get Val
+    function Get_Val (L : Liste) return Element;
+    
+    --Get Suiv
+    function Get_Suiv (L : Liste) return Liste;
+    
+    -- Test si la liste est vide
+    function Est_Vide (L : Liste) return Boolean;
 
     -- Cree un nouvel iterateur 
     function Creer_Iterateur (L : Liste) return Iterateur;
@@ -59,7 +68,7 @@ private
     type Iterateur_Interne is record
 --===> GENERICITE: Val est du type "Element" generique
 		Val: Element;
-		Suiv: Liste;
+		Suiv: Iterateur;
 	end record;
    
 end Liste_Generique;

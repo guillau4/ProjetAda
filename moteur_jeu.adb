@@ -1,63 +1,102 @@
 with Participant; use Participant; 
 with Liste_Generique;
-with Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Numerics.Discrete_Random;
 
-generic
-    type Etat is private;
-    type Coup is private;
+with Ada.Integer_Text_IO;
+use Ada.Integer_Text_IO;
 
-    -- Calcule l'etat suivant en appliquant le coup
-    with function Etat_Suivant(E : Etat; C : Coup) return Etat;
-    
-    -- Indique si l'etat courant est gagnant pour J
-    with function Est_Gagnant(E : Etat; J : Joueur) return Boolean; 
-    
-    -- Indique si l'etat courant est un status quo (match nul)
-    with function Est_Nul(E : Etat) return Boolean; 
 
-    -- Affiche a l'ecran le coup passe en parametre
-    with procedure Affiche_Coup(C : in Coup);
     
-    -- Implantation d'un package de liste de coups
-    with package Liste_Coups is new Liste_Generique(Coup, Affiche_Coup); 
-    
-    -- Retourne la liste des coups possibles pour J a partir de l'etat 
-    with function Coups_Possibles(E : Etat; J : Joueur)
-            return Liste_Coups.Liste; 
-            
-    -- Evaluation statique du jeu du point de vue de l'ordinateur
-    with function Eval(E : Etat) return Integer;   
-    
-    -- Profondeur de recherche du coup
-    P : Natural;
-    
-    -- Indique le joueur interprete par le moteur
-    JoueurMoteur : Joueur;
-    
-package Moteur_Jeu is
+package body Moteur_Jeu is
     
     -- Choix du prochain coup par l'ordinateur. 
     -- E : l'etat actuel du jeu;
     -- P : profondeur a laquelle la selection doit s'effetuer
     function Choix_Coup(E : Etat) return Coup is
+		C : Coup;
+		L : Liste_Coups.Liste;
+		M : Integer := -100;
+		N : Integer;
+		
+		type ran is range 0 .. 1;
+		package alea is new Ada.Numerics.Discrete_Random (ran);
+		use alea;
+		
+		R : ran;
+		G : Generator;
+    
     begin
-	    if 1+1=2 then
-    	end if;
-    return null;
+	    Reset(G);
+	    R := Random(G);
+	    L := Coups_Possibles(E, JoueurMoteur);
+		if not Liste_Coups.Est_Vide(L) then
+			C := Liste_Coups.Get_Val(L);
+		end if;	
+			while not Liste_Coups.Est_Vide(L) loop
+				N := Eval_Min_Max(E, P, Liste_Coups.Get_Val(L), JoueurMoteur);
+
+				if N > M then
+					M := N;
+					C := Liste_Coups.Get_Val(L);
+				else
+					if N = M then
+					--Choix non equiprobable mais permettant de l'alea
+						if R = 1 then
+							M := N;
+							C := Liste_Coups.Get_Val(L);
+						end if;
+						R := Random(G);
+					end if;
+				end if;
+				L := Liste_Coups.Get_Suiv(L);
+			end loop;
+		return C;
     end Choix_Coup;
    
-private 
-    -- Evaluation d'un coup a partir d'un etat donne
-    -- E : Etat courant
-    -- P : profondeur a laquelle cette evaluation doit etre realisee
-    -- C : Coup a evaluer
-    -- J : Joueur qui realise le coup
+   
+   
     function Eval_Min_Max(E : Etat; P : Natural; C : Coup; J : Joueur)
         return Integer is
+    F : Etat:=E;
+    L : Liste_Coups.Liste;
+    M : Integer := -100;
+    N : Integer;
     begin
-	    if 1+1=2 then
+    --On commence par determiner le point de vue adopté (signe)
+    	if J = JoueurMoteur then
+    		M := 100;
     	end if;
-    return null;
+    	
+	    F := Etat_Suivant(F, C);
+	    if Est_Gagnant(F, adversaire(J)) then
+	    	return M;
+	    end if;
+
+	    if P = 0 then
+	--On utilise la fonction eval de puissance, au signe près
+	    	return M*Eval(F);
+	    end if;
+	    
+	--Sinon on recommence recursivement
+	    L := Coups_Possibles(F, Adversaire(J));
+	    while not Liste_Coups.Est_Vide(L) loop
+	   -- Affiche_Coup(Liste_Coups.Get_Val(L));
+	    	N := Eval_Min_Max(F, P-1, Liste_Coups.Get_Val(L), Adversaire(J));
+	    	--Put(N);
+			if J = JoueurMoteur then
+				if N < M then
+					M := N;
+				end if;
+			else
+				if N > M then
+					M := N;
+				end if;					
+	    	end if;
+	    	L := Liste_Coups.Get_Suiv(L);
+	    end loop;
+	    
+	    return M;
     end Eval_Min_Max;
    
 end Moteur_Jeu;

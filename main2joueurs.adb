@@ -10,15 +10,12 @@ use Ada.Text_IO;
 use Ada.Integer_Text_IO;
 use Participant;
 
--- Iterateur_Interne = Cellule atm
--- Est_Nul() n'utilise pas Joueur
--- Joueur1 est tjs X
--- Est_Gagnant non implementée
+
 
 
 procedure Main2Joueurs is
    
-   package MyPuissance4 is new Puissance4(3,3,3);
+   package MyPuissance4 is new Puissance4(3,3,3);	
    
    -- definition d'une partie entre un humain en Joueur 1 et un humain en Joueur 2
    package MyPartie is new Partie(MyPuissance4.Etat,
